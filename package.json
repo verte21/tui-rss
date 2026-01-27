@@ -1,0 +1,23 @@
+{
+  "name": "tui-rss",
+  "module": "src/index.tsx",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun run --watch src/index.tsx"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/html-to-text": "^9.0.4"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@opentui/core": "^0.1.38",
+    "@opentui/react": "^0.1.38",
+    "fast-xml-parser": "^5.3.3",
+    "html-to-text": "^9.0.5",
+    "react": "^19.1.1"
+  }
+}
