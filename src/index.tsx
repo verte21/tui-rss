@@ -513,6 +513,7 @@ function App() {
         title={getWindowTitle()}
         canScroll={scrollInfo.canScroll}
         scrollPercent={scrollInfo.scrollPercent}
+        wide={state.viewMode === "article-viewer"}
       >
         {loading && state.viewMode !== "add-feed" ? (
           <box alignItems="center" justifyContent="center" height={18}>

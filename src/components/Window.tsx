@@ -6,10 +6,11 @@ interface WindowProps {
   children: ReactNode;
   scrollPercent?: number;
   canScroll?: boolean;
+  wide?: boolean; // For article viewer mode
 }
 
-export function Window({ title, children }: WindowProps) {
-  const width = 78;
+export function Window({ title, children, wide = false }: WindowProps) {
+  const width = wide ? 90 : 78;
   
   // Create top border: ╔═══ Title ═══╗
   const titlePadded = ` ${title} `;
@@ -27,8 +28,8 @@ export function Window({ title, children }: WindowProps) {
         {/* Top border with title */}
         <text fg="#bada55" attributes={TextAttributes.BOLD}>{topBorder}</text>
         
-        {/* Content with simple side borders */}
-        <box flexDirection="column" paddingLeft={2} paddingRight={2}>
+        {/* Content with padding */}
+        <box flexDirection="column" paddingLeft={3} paddingRight={3} paddingTop={1} paddingBottom={1}>
           {children}
         </box>
         

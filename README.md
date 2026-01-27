@@ -2,6 +2,8 @@
 
 A terminal-based RSS feed reader built with OpenTUI, featuring keyboard navigation, favorites management, and full article rendering.
 
+![TUI RSS Reader](./screenshot.png)
+
 ## Features
 
 - 📰 **RSS/Atom Support** - Parse both RSS 2.0 and Atom feeds
