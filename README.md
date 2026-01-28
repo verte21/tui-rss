@@ -38,8 +38,13 @@ All data is stored in `~/.tui-rss/data.json` including:
 - Feed subscriptions
 - Favorite articles
 
+## Inspiration
+
+This project is inspired by [terminal.shop](https://terminal.shop) and uses [Mozilla Readability](https://github.com/mozilla/readability) for clean article rendering.
+
 ## Built With
 
 - [OpenTUI](https://opentui.com) - Terminal UI framework
 - [Bun](https://bun.sh) - JavaScript runtime
+- [@mozilla/readability](https://github.com/mozilla/readability) - Article content extraction
 - TypeScript + React
