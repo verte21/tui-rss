@@ -22,6 +22,8 @@ export function ArticleList({ articles, selectedIndex }: ArticleListProps) {
   const startIdx = Math.max(0, Math.min(selectedIndex - 2, articles.length - maxVisible));
   const visibleArticles = articles.slice(startIdx, startIdx + maxVisible);
 
+
+
   return (
     <box flexDirection="column">
       {visibleArticles.map((article, idx) => {

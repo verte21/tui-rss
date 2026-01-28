@@ -8,12 +8,14 @@ const parser = new XMLParser({
 });
 
 /**
- * Generate a unique ID from the article link and title
+ * Generate a unique ID from the article link, title, and guid
  */
-function generateId(link: string, title: string = "", index: number = 0): string {
-  // Combine link, title, and index for better uniqueness
-  const source = `${link}-${title}-${index}`;
-  return btoa(encodeURIComponent(source)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32);
+function generateId(link: string, title: string = "", guid: string = ""): string {
+  // Use link as primary unique identifier, fall back to guid, then title
+  const primary = link || guid || title || `${Date.now()}-${Math.random()}`;
+  // Create a stable hash that doesn't truncate
+  const encoded = encodeURIComponent(primary);
+  return btoa(encoded).replace(/[^a-zA-Z0-9]/g, '');
 }
 
 /**
@@ -32,8 +34,8 @@ function parseRSS(data: any): RSSFeed {
     title: decodeHtmlEntities(channel.title) || "Untitled Feed",
     description: channel.description || "",
     link: channel.link || "",
-    items: items.map((item: any, index: number): RSSItem => ({
-      id: generateId(item.link || item.guid?.["#text"] || item.guid || "", item.title || "", index),
+    items: items.map((item: any): RSSItem => ({
+      id: generateId(item.link || "", item.title || "", item.guid?.["#text"] || item.guid || ""),
       title: decodeHtmlEntities(item.title) || "Untitled",
       link: item.link || "",
       description: item.description || "",
@@ -63,14 +65,15 @@ function parseAtom(data: any): RSSFeed {
     link: Array.isArray(feed.link) 
       ? feed.link.find((l: any) => l["@_rel"] === "alternate")?.["@_href"] || feed.link[0]?.["@_href"] || ""
       : feed.link?.["@_href"] || "",
-    items: entries.map((entry: any, index: number): RSSItem => {
+    items: entries.map((entry: any): RSSItem => {
       const link = Array.isArray(entry.link)
         ? entry.link.find((l: any) => l["@_rel"] === "alternate")?.["@_href"] || entry.link[0]?.["@_href"] || ""
         : entry.link?.["@_href"] || "";
       const title = decodeHtmlEntities(entry.title?.["#text"] || entry.title) || "Untitled";
+      const guid = entry.id || "";
       
       return {
-        id: generateId(entry.id || link, title, index),
+        id: generateId(link, title, guid),
         title,
         link,
         description: entry.summary?.["#text"] || entry.summary || "",

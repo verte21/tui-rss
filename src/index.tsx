@@ -76,14 +76,15 @@ function App() {
       const currentFavorites = getFavoriteArticles();
       const favoriteIds = new Set(currentFavorites.map(f => f.id));
       
-      // Mark favorites
-      feed.items.forEach((item) => {
-        item.isFavorite = favoriteIds.has(item.id);
-      });
+      // Clone items and mark favorites (create fresh objects to avoid reference issues)
+      const itemsWithFavorites = feed.items.map(item => ({
+        ...item,
+        isFavorite: favoriteIds.has(item.id),
+      }));
 
       setState((prev) => ({
         ...prev,
-        currentFeed: feed,
+        currentFeed: { ...feed, items: itemsWithFavorites },
         favorites: favoriteIds,
         viewMode: "article-list",
         selectedArticleIndex: 0,
@@ -190,11 +191,12 @@ function App() {
                   newFavorites.delete(article.id);
                 }
 
-                // Update article by index, not by ID
+                // Clone ALL items to avoid reference issues
                 if (prev.currentFeed) {
-                  const updatedItems = prev.currentFeed.items.map((item, idx) =>
-                    idx === articleIndex ? { ...item, isFavorite: isFav } : item
-                  );
+                  const updatedItems = prev.currentFeed.items.map((item, idx) => ({
+                    ...item,
+                    isFavorite: idx === articleIndex ? isFav : item.isFavorite,
+                  }));
                   return {
                     ...prev,
                     currentFeed: { ...prev.currentFeed, items: updatedItems },
@@ -250,9 +252,18 @@ function App() {
                 newFavorites.delete(prev.currentArticle.id);
               }
 
-              // Only update currentArticle, don't modify feed items
+              // Update both currentArticle AND ALL feed items (clone all for safety)
+              const updatedFeed = prev.currentFeed ? {
+                ...prev.currentFeed,
+                items: prev.currentFeed.items.map((item) => ({
+                  ...item,
+                  isFavorite: item.id === prev.currentArticle!.id ? isFav : item.isFavorite,
+                })),
+              } : null;
+
               return {
                 ...prev,
+                currentFeed: updatedFeed,
                 currentArticle: { ...prev.currentArticle, isFavorite: isFav },
                 favorites: newFavorites,
               };
@@ -298,13 +309,29 @@ function App() {
             Bun.spawn(["open", url]);
           }
         } else if (key === Keys.ESC) {
-          setState((prev) => ({
-            ...prev,
-            viewMode: "article-list",
-            currentArticle: null,
-            scrollPosition: 0,
-            viewingWebpage: false,
-          }));
+          // Refresh favorites from database when returning to article-list
+          const currentFavorites = getFavoriteArticles();
+          const favoriteIds = new Set(currentFavorites.map(f => f.id));
+          
+          setState((prev) => {
+            const updatedFeed = prev.currentFeed ? {
+              ...prev.currentFeed,
+              items: prev.currentFeed.items.map((item) => ({
+                ...item,
+                isFavorite: favoriteIds.has(item.id),
+              })),
+            } : null;
+            
+            return {
+              ...prev,
+              viewMode: "article-list",
+              currentFeed: updatedFeed,
+              currentArticle: null,
+              scrollPosition: 0,
+              viewingWebpage: false,
+              favorites: favoriteIds,
+            };
+          });
         }
       }
       
