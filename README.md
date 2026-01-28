@@ -24,6 +24,21 @@ bun install
 bun run dev
 ```
 
+## Build & Install
+
+Compile to a standalone binary:
+
+```bash
+bun build --compile --minify ./src/index.tsx --outfile rss
+```
+
+Install:
+
+```bash
+sudo cp rss /usr/local/bin/
+rss
+```
+
 ## Default Feeds
 
 The app comes pre-configured with:
