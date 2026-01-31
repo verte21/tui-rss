@@ -27,7 +27,7 @@ export function StatusBar({ viewMode }: StatusBarProps) {
     <box flexDirection="column">
       <text attributes={TextAttributes.DIM} fg="#bada55">{"─".repeat(92)}</text>
       <box flexDirection="row" justifyContent="space-between" paddingTop={0} paddingBottom={1}>
-        <text fg="#bada55"> 📡 TUI RSS Reader </text>
+        <text fg="#bada55"> 📡 Tui-RSS </text>
         <text attributes={TextAttributes.DIM}>{getHelp()}</text>
       </box>
     </box>

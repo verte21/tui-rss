@@ -512,7 +512,7 @@ function App() {
       case "edit-feed":
         return "✏️ Edit Feed";
       default:
-        return "TUI RSS Reader";
+        return "Tui-RSS";
     }
   };
 
